@@ -2,7 +2,6 @@ package com.tulio.store_multimarcas.domain.dto;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
