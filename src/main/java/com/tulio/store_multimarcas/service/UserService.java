@@ -8,4 +8,5 @@ import java.util.List;
 public interface UserService {
 
     List<UserDTO> getAllUsers(PageRequestDTO pageRequest);
+    UserDTO getUserByEmail(String email);
 }

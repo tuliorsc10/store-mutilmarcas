@@ -28,4 +28,8 @@ public class UserServiceImpl implements UserService {
         usersPage.forEach(user -> userDTOList.add(userMapper.toDTO(user)));
         return userDTOList;
     }
+
+    public UserDTO getUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(userMapper::toDTO).orElseThrow();
+    }
 }
