@@ -1,10 +1,10 @@
 package com.tulio.store_multimarcas.user.service.impl;
 
-import com.tulio.store_multimarcas.user.mapper.UserMapper;
-import com.tulio.store_multimarcas.user.repository.UserRepository;
 import com.tulio.store_multimarcas.user.dto.PageRequestDTO;
 import com.tulio.store_multimarcas.user.dto.UserDTO;
 import com.tulio.store_multimarcas.user.dto.UserEntity;
+import com.tulio.store_multimarcas.user.mapper.UserMapper;
+import com.tulio.store_multimarcas.user.repository.UserRepository;
 import com.tulio.store_multimarcas.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
         return userDTOList;
     }
 
+    @Override
     public UserDTO getUserByEmail(String email) {
         return userRepository.findByEmail(email).map(userMapper::toDTO).orElseThrow();
     }

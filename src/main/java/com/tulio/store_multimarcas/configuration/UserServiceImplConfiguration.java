@@ -1,7 +1,8 @@
 package com.tulio.store_multimarcas.configuration;
 
-import com.tulio.store_multimarcas.domain.dto.Profile;
-import com.tulio.store_multimarcas.domain.dto.UserEntity;
+
+import com.tulio.store_multimarcas.user.dto.Profile;
+import com.tulio.store_multimarcas.user.dto.UserEntity;
 import com.tulio.store_multimarcas.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.AuthorityUtils;
