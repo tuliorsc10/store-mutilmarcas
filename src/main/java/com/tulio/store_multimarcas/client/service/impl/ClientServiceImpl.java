@@ -25,7 +25,7 @@ public class ClientServiceImpl implements ClientService {
             throw new RuntimeException(String.format("A client with this email address %s has already been registered", client.get().getEmail()));
         }
         ClientEntity clientEntity = clientMapper.toClientEntity(request);
-        ClientEntity saveClient = clientRepository.createClient(clientEntity);
+        ClientEntity saveClient = clientRepository.save(clientEntity);
         return clientMapper.toCreateClientResponse(saveClient);
     }
 }

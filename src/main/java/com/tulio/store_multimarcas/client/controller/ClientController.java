@@ -16,7 +16,7 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    @PostMapping("create/client")
+    @PostMapping()
     public ResponseEntity<CreateClientReponseDTO> createUser(@RequestBody @Valid CreateClientRequestDTO request) {
         return ResponseEntity.ok(clientService.createClient(request));
     }
