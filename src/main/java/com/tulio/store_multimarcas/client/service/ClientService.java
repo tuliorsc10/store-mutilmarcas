@@ -1,9 +1,15 @@
 package com.tulio.store_multimarcas.client.service;
 
-import com.tulio.store_multimarcas.client.dto.CreateClientReponseDTO;
-import com.tulio.store_multimarcas.client.dto.CreateClientRequestDTO;
+import com.tulio.store_multimarcas.client.dto.*;
+import jakarta.validation.Valid;
 
 public interface ClientService {
 
     CreateClientReponseDTO createClient(CreateClientRequestDTO request);
+
+    RetrieveClientDTO retrieveClientById(Long id);
+
+    void deleteClientById(Long id);
+
+    UpdateClientResponseDTO updateClient(Long id, @Valid UpdateClientResquestDTO request);
 }

@@ -15,6 +15,4 @@ public interface UserRepository extends ListPagingAndSortingRepository<UserEntit
     Optional<UserEntity> findByEmail(@Param("email") String email);
 
     Page<UserEntity> findAll(Pageable pageable);
-
-    UserEntity createUser(UserEntity user);
 }
