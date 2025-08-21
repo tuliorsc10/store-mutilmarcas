@@ -1,8 +1,8 @@
 package com.tulio.store_multimarcas.user.controller;
 
-import com.tulio.store_multimarcas.user.service.UserService;
 import com.tulio.store_multimarcas.user.dto.PageRequestDTO;
 import com.tulio.store_multimarcas.user.dto.UserDTO;
+import com.tulio.store_multimarcas.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
