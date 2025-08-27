@@ -22,7 +22,7 @@ public class JewelryEntity {
     private UUID id;
     private String name;
     private String size;
-    private String value;
+    private String price;
     private JewelryEnum type;
     private MetalEnum metalType;
 }
