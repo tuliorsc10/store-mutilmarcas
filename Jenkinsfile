@@ -34,19 +34,5 @@ pipeline {
                 }
             }
         }
-
-        stage('Package') {
-            steps {
-                echo '📦 Gerando pacote...'
-                sh 'mvn package -DskipTests'
-            }
-
-            post {
-                success {
-                    // Arquivar o .jar gerado
-                    archiveArtifacts 'target/*.jar'
-                }
-            }
-        }
     }
 }
