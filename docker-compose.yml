@@ -21,5 +21,23 @@ services:
       timeout: 5s
       retries: 5
 
+    # Serviço do Jenkins
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins-ci
+    user: "1000:984"  # ⚠️ IMPORTANTE: jenkins user : docker group
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - JAVA_OPTS=-Duser.timezone=America/Sao_Paulo
+    restart: unless-stopped
+
 volumes:
   postgres_data:
+  jenkins_data:

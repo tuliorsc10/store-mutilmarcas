@@ -20,5 +20,19 @@ pipeline {
                 sh 'mvn clean compile'
             }
         }
+
+        stage('Test') {
+             steps {
+                 echo '🧪 Executando testes com H2...'
+                 sh 'mvn test -Dspring.profiles.active=test'
+             }
+
+             post {
+                 always {
+                   junit '**/target/surefire-reports/*.xml'
+                   jacoco execPattern: '**/target/jacoco.exec'
+                   }
+             }
+        }
     }
 }
