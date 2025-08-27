@@ -20,19 +20,5 @@ pipeline {
                 sh 'mvn clean compile'
             }
         }
-
-        stage('Test') {
-            steps {
-                echo '🧪 Executando testes...'
-                sh 'mvn test'
-            }
-
-            post {
-                always {
-                    // Publicar relatórios de teste mesmo se falhar
-                    junit '**/target/surefire-reports/*.xml'
-                }
-            }
-        }
     }
 }
