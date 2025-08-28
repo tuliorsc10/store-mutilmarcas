@@ -20,8 +20,6 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'cp $JWT_PUBLIC_KEY src/main/resources/keypublic.pem'
-                sh 'cp $JWT_PRIVATE_KEY src/main/resources/keyprivate.pem'
                 echo '🔨 Compilando projeto Maven...'
                 sh 'mvn clean compile'
             }
