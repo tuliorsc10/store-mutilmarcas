@@ -10,10 +10,8 @@ server:
     show-actuator: true
 
 jwt:
-  private:
-    key: classpath:keyprivate.pem
-  public:
-    key: classpath:keypublic.pem
+  private-key: classpath:keyprivate.pem
+  public-key: classpath:keypublic.pem
 
 spring:
   profiles:

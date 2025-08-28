@@ -3,11 +3,11 @@ package com.tulio.store_multimarcas.configuration;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,36 +27,45 @@ import java.security.interfaces.RSAPublicKey;
 
 @Configuration
 @EnableWebSecurity
+@EnableConfigurationProperties(RsaKeyProperties.class)
 public class SecurityConfig {
 
-    @Value("${jwt.public.key}")
-    private RSAPublicKey rsaPublicKey;
-    @Value("${jwt.private.key}")
-    private RSAPrivateKey rsaPrivateKey;
+    private final RsaKeyProperties rsaKeyProperties;
+
+    public SecurityConfig(RsaKeyProperties rsaKeyProperties) {
+        this.rsaKeyProperties = rsaKeyProperties;
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/authenticate").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/user/all").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .oauth2ResourceServer(conf -> conf.jwt(Customizer.withDefaults()));
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
 
     @Bean
-    JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withPublicKey(rsaPublicKey).build();
+    JwtDecoder jwtDecoder() throws Exception {
+        RSAPublicKey publicKey = loadPublicKey();
+        return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
 
     @Bean
-    JwtEncoder jwtEncoder() {
-        RSAKey rsaKey = new RSAKey.Builder(rsaPublicKey).privateKey(rsaPrivateKey).build();
-        ImmutableJWKSet<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(rsaKey));
-        return new NimbusJwtEncoder(jwks);
+    JwtEncoder jwtEncoder() throws Exception {
+        RSAPublicKey publicKey = loadPublicKey();
+        RSAPrivateKey privateKey = loadPrivateKey();
+
+        RSAKey rsaKey = new RSAKey.Builder(publicKey)
+                .privateKey(privateKey)
+                .build();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(jwkSet);
+        return new NimbusJwtEncoder(jwkSource);
     }
 
     @Bean
@@ -66,12 +75,44 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
-
         JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         grantedAuthoritiesConverter.setAuthorityPrefix("");
+        grantedAuthoritiesConverter.setAuthoritiesClaimName("scope");
 
         JwtAuthenticationConverter authConverter = new JwtAuthenticationConverter();
         authConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return authConverter;
+    }
+
+    private RSAPublicKey loadPublicKey() throws Exception {
+        String publicKeyContent = readKeyContent(rsaKeyProperties.getPublicKey().getInputStream());
+        publicKeyContent = publicKeyContent
+                .replace("-----BEGIN PUBLIC KEY-----", "")
+                .replace("-----END PUBLIC KEY-----", "")
+                .replaceAll("\\s", "");
+
+        byte[] keyBytes = java.util.Base64.getDecoder().decode(publicKeyContent);
+        java.security.spec.X509EncodedKeySpec spec = new java.security.spec.X509EncodedKeySpec(keyBytes);
+        java.security.KeyFactory keyFactory = java.security.KeyFactory.getInstance("RSA");
+        return (RSAPublicKey) keyFactory.generatePublic(spec);
+    }
+
+    private RSAPrivateKey loadPrivateKey() throws Exception {
+        String privateKeyContent = readKeyContent(rsaKeyProperties.getPrivateKey().getInputStream());
+        privateKeyContent = privateKeyContent
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replace("-----END PRIVATE KEY-----", "")
+                .replaceAll("\\s", "");
+
+        byte[] keyBytes = java.util.Base64.getDecoder().decode(privateKeyContent);
+        java.security.spec.PKCS8EncodedKeySpec spec = new java.security.spec.PKCS8EncodedKeySpec(keyBytes);
+        java.security.KeyFactory keyFactory = java.security.KeyFactory.getInstance("RSA");
+        return (RSAPrivateKey) keyFactory.generatePrivate(spec);
+    }
+
+    private String readKeyContent(java.io.InputStream inputStream) throws Exception {
+        try (inputStream) {
+            return new String(inputStream.readAllBytes());
+        }
     }
 }
