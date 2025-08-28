@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        JWT_PUBLIC_KEY = credentials('jwt.public.key}')
+        JWT_PUBLIC_KEY = credentials('jwt.public.key')
         JWT_PRIVATE_KEY = credentials('jwt.private.key')
     }
     tools {
