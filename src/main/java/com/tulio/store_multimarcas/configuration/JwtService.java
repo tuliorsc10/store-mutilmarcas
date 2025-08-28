@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
+
     private final JwtEncoder jwtEncoder;
 
     public JwtService(JwtEncoder jwtEncoder) {
@@ -20,16 +21,21 @@ public class JwtService {
 
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
-        long expired = 3600L;
-        String scopes = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority).collect(Collectors.joining(" "));
+        Instant expiry = now.plusSeconds(36000);
 
-        var claims = JwtClaimsSet.builder().issuer("store_multimarcas")
+        String scope = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(" "));
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
                 .issuedAt(now)
-                .expiresAt(now.plusSeconds(expired))
-                .claim("scope", scopes)
+                .expiresAt(expiry)
+                .subject(authentication.getName())
+                .claim("scope", scope)
+                .claim("username", authentication.getName())
                 .build();
 
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
 }
