@@ -10,6 +10,6 @@ import org.springframework.core.io.Resource;
 @ConfigurationProperties(prefix = "jwt")
 public class RsaKeyProperties {
 
-    private Resource publicKey;
-    private Resource privateKey;
+    private String publicKey;
+    private String privateKey;
 }
