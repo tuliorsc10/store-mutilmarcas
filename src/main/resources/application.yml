@@ -16,3 +16,27 @@ jwt:
 spring:
   profiles:
     active: dev
+
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 3
+      properties:
+        request.timeout.ms: 30000
+        delivery.timeout.ms: 45000
+    consumer:
+      group-id: my-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    properties:
+      security.protocol: PLAINTEXT
+      reconnect.backoff.ms: 1000
+      reconnect.backoff.max.ms: 10000
+
+  logging:
+    level:
+      org.apache.kafka: WARN
+      org.springframework.kafka: DEBUG
