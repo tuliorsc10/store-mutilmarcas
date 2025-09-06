@@ -1,5 +1,7 @@
 package com.tulio.store_multimarcas.configuration;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -15,7 +17,7 @@ public class JwtService {
 
     private final JwtEncoder jwtEncoder;
 
-    public JwtService(JwtEncoder jwtEncoder) {
+    public JwtService(AuthenticationManager authenticationManager, JwtEncoder jwtEncoder) {
         this.jwtEncoder = jwtEncoder;
     }
 
