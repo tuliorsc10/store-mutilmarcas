@@ -25,4 +25,6 @@ public class JewelryEntity {
     private String price;
     private JewelryEnum type;
     private MetalEnum metalType;
+    private Integer qtd;
+    private String brand;
 }

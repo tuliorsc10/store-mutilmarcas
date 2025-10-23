@@ -8,7 +8,7 @@ import com.tulio.store_multimarcas.product.service.ProdutStrategy;
 
 import java.util.UUID;
 
-public class JewelryStrategyImpl implements ProdutStrategy {
+public class WatchesStrategyImpl implements ProdutStrategy {
     @Override
     public ResponseSearchProductDTO getProduct(UUID id) {
         return null;
@@ -31,6 +31,6 @@ public class JewelryStrategyImpl implements ProdutStrategy {
 
     @Override
     public boolean getStrategy(ProductEnum productEnum) {
-        return ProductEnum.JEWELRY.equals(productEnum);
+        return ProductEnum.WATCHES.equals(productEnum);
     }
 }

@@ -1,6 +1,6 @@
 package com.tulio.store_multimarcas.product.jewelry.controller;
 
-import com.tulio.store_multimarcas.product.jewelry.domain.dto.ResponseJewelry;
+import com.tulio.store_multimarcas.product.jewelry.domain.dto.ResponseSearchJewelryDTO;
 import com.tulio.store_multimarcas.product.jewelry.service.JewelryService;
 import com.tulio.store_multimarcas.user.dto.PageRequestDTO;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class JewelryController {
     private final JewelryService jewelryService;
 
     @GetMapping
-    public ResponseEntity<List<ResponseJewelry>> getAllJewelry(@RequestParam int pageNumber, @RequestParam int pageSize) {
+    public ResponseEntity<List<ResponseSearchJewelryDTO>> getAllJewelry(@RequestParam int pageNumber, @RequestParam int pageSize) {
         return ResponseEntity.ok(jewelryService.getAllJewelry(new PageRequestDTO(pageNumber, pageSize)));
     }
 }

@@ -1,6 +1,6 @@
 package com.tulio.store_multimarcas.product.jewelry.service.impl;
 
-import com.tulio.store_multimarcas.product.jewelry.domain.dto.ResponseJewelry;
+import com.tulio.store_multimarcas.product.jewelry.domain.dto.ResponseSearchJewelryDTO;
 import com.tulio.store_multimarcas.product.jewelry.domain.entity.JewelryEntity;
 import com.tulio.store_multimarcas.product.jewelry.mapper.JewelryMapper;
 import com.tulio.store_multimarcas.product.jewelry.repository.JewelryRepository;
@@ -22,9 +22,9 @@ public class JewelryServiceImpl implements JewelryService {
     private final JewelryMapper mapper;
 
     @Override
-    public List<ResponseJewelry> getAllJewelry(PageRequestDTO pageRequestDTO) {
+    public List<ResponseSearchJewelryDTO> getAllJewelry(PageRequestDTO pageRequestDTO) {
         Page<JewelryEntity> page = jewelryRepository.findAll(PageRequest.of(pageRequestDTO.pageNumber(), pageRequestDTO.pageSize()));
-        List<ResponseJewelry> jewelryList = new ArrayList<>();
+        List<ResponseSearchJewelryDTO> jewelryList = new ArrayList<>();
         page.forEach(jewelry -> jewelryList.add(mapper.toResponseJewelry(jewelry)));
         return jewelryList;
     }
