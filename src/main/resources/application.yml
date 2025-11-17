@@ -26,11 +26,6 @@ spring:
       properties:
         request.timeout.ms: 30000
         delivery.timeout.ms: 45000
-    consumer:
-      group-id: my-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
     properties:
       security.protocol: PLAINTEXT
       reconnect.backoff.ms: 1000

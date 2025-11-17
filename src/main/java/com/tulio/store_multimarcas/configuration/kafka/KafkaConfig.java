@@ -1,4 +1,4 @@
-package com.tulio.store_multimarcas.configuration;
+package com.tulio.store_multimarcas.configuration.kafka;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -24,9 +24,7 @@ public class KafkaConfig {
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        configProps.put(ProducerConfig.RETRIES_CONFIG, 5);
-        configProps.put(ProducerConfig.RECONNECT_BACKOFF_MS_CONFIG, 1000);
-        configProps.put(ProducerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, 10000);
+        configProps.put(ProducerConfig.ACKS_CONFIG, "all");
         configProps.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, 30000);
 
         return new DefaultKafkaProducerFactory<>(configProps);
