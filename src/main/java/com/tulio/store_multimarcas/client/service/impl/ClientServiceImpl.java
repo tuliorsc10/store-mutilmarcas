@@ -4,7 +4,10 @@ import com.tulio.store_multimarcas.client.dto.*;
 import com.tulio.store_multimarcas.client.mapper.ClientMapper;
 import com.tulio.store_multimarcas.client.repository.ClientRepository;
 import com.tulio.store_multimarcas.client.service.ClientService;
+import com.tulio.store_multimarcas.client.util.validate.ValidateCnpj;
+import com.tulio.store_multimarcas.configuration.kafka.KafkaProducer;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -12,20 +15,32 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ClientServiceImpl implements ClientService {
 
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     public CreateClientReponseDTO createClient(CreateClientRequestDTO request) {
+        log.info("Received request: {}", request);
         Optional<ClientEntity> client = clientRepository.findByEmail(request.getEmail());
         if (client.isPresent()) {
             throw new RuntimeException(String.format("A client with this email address %s has already been registered", client.get().getEmail()));
         }
+        validateDocument(request);
         ClientEntity clientEntity = clientMapper.toClientEntity(request);
+        log.info("Clienty Entity: {}", clientEntity);
         ClientEntity saveClient = clientRepository.save(clientEntity);
+        log.info("Clienty entity saved: {}", saveClient);
         return clientMapper.toCreateClientResponse(saveClient);
+    }
+
+    private void validateDocument(CreateClientRequestDTO request) {
+        if (ValidateCnpj.validar(request.getDocument())) {
+            kafkaProducer.sendSync("VALIDATE_CNPJ_RECEITA_FEDERAL", request.getDocument());
+        }
     }
 
     @Override

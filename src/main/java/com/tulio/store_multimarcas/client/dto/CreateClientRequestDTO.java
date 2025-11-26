@@ -19,7 +19,7 @@ public class CreateClientRequestDTO implements Serializable {
     @NotBlank
     private String phone;
     @NotBlank
-    private String documentCpf;
+    private String document;
     @NotNull
     private AddressClientDTO address;
 }

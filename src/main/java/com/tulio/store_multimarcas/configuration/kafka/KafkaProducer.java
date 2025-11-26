@@ -16,11 +16,10 @@ import java.util.concurrent.TimeoutException;
 @RequiredArgsConstructor
 public class KafkaProducer {
 
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
-    private KafkaTemplate<String, Object> kafkaTemplate;
-
-    public void sendMessageWithCallback(String topic, Object message) {
-        CompletableFuture<SendResult<String, Object>> future = kafkaTemplate.send(topic, message);
+    public void sendMessageWithCallback(String topic, String message) {
+        CompletableFuture<SendResult<String, String>> future = kafkaTemplate.send(topic, message);
 
         future.whenComplete((result, ex) -> {
             if (ex == null) {
@@ -32,10 +31,10 @@ public class KafkaProducer {
         });
     }
 
-    public boolean sendSync(String topic, Object message) {
+    public boolean sendSync(String topic, String message) {
         try {
-            SendResult<String, Object> result = kafkaTemplate.send(topic, message)
-                    .get(30, TimeUnit.SECONDS); // 30 second timeout
+            SendResult<String, String> result = kafkaTemplate.send(topic, message)
+                    .get(30, TimeUnit.SECONDS);
 
             log.info("Message confirmed. Offset: {}", result.getRecordMetadata().offset());
             return true;
@@ -43,6 +42,7 @@ public class KafkaProducer {
         } catch (TimeoutException e) {
             log.error("Timeout while sending message", e);
             return false;
+
         } catch (InterruptedException | ExecutionException e) {
             log.error("Error sending message", e);
             Thread.currentThread().interrupt();
